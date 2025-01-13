@@ -8,8 +8,20 @@ declare module '@vinejs/vine' {
     _output: T
   }
 
-  export class ValidationError extends Error {
-    messages: any[]
+  export interface ValidationError extends Error {
+    messages: ValidationErrorMessage[]
+  }
+
+  export interface ValidationErrorMessage {
+    message: string
+    field: string
+    rule: string
+  }
+
+  export interface ValidationErrorResponse {
+    error: 'Validation failure'
+    message: string
+    errors?: ValidationErrorMessage[]
   }
 
   const vine: {

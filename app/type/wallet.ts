@@ -15,3 +15,14 @@ export interface WalletResponse {
   ethBalance: string
   transactions: FormattedTransaction[]
 }
+
+export interface TransactionExport {
+  hash: string
+  date: string
+  from: string
+  to: string
+  value: string
+  currency: string
+  gasUsed: string
+  status: string
+}

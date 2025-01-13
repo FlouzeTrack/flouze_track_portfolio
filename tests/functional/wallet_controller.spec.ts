@@ -1,5 +1,4 @@
 import { test } from '@japa/runner'
-import { expect } from '@japa/expect'
 
 test.group('Wallet Controller', () => {
   const validAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'

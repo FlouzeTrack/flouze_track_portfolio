@@ -1,25 +1,31 @@
 declare module '@vinejs/vine' {
-  export interface Schema {
+  export interface VineSchema {
     type: string
     props: Record<string, any>
   }
 
-  export type InferType<T extends Schema> = any
+  export interface VineInfer<T> {
+    _output: T
+  }
 
-  export interface VineString extends Schema {
-    type: 'string'
-    optional(): this
-    regex(pattern: RegExp, message?: string | { message: string }): this
+  export class ValidationError extends Error {
+    messages: any[]
   }
 
   const vine: {
-    compile: <T>(schema: Schema) => any
-    object: (schema: Record<string, Schema>) => Schema
+    compile: <T>(schema: any) => {
+      validate: (data: any) => Promise<T>
+    }
+    object: (schema: Record<string, any>) => any
     string: (options?: {
       trim?: boolean
       escape?: boolean
       messages?: Record<string, string>
-    }) => VineString
+    }) => any
+    infer: <T>(validator: T) => T extends VineInfer<infer U> ? U : never
+    errors: {
+      ValidationError: typeof ValidationError
+    }
   }
 
   export default vine

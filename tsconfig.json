@@ -5,7 +5,29 @@
     "outDir": "./build",
     "typeRoots": [
       "./node_modules/@types",
-      "./app/types"
-    ]
-  }
+      "./app/type"
+    ],
+    "paths": {
+      "#*": ["./app/*"],
+      "@/*": ["./app/*"]
+    },
+    "types": [],
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",  // Changed to NodeNext
+    "module": "NodeNext",           // Changed to NodeNext
+    "target": "ESNext",            // Added for ES modules
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowJs": true,
+    "resolveJsonModule": true
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "build"
+  ]
 }

@@ -1,9 +1,13 @@
-import vine, { Schema } from '@vinejs/vine'
+import vine from '@vinejs/vine'
+
+interface WalletAddressSchema {
+  address: string
+}
 
 /**
  * Validator for Ethereum wallet address
  */
-export const walletAddressValidator = vine.compile(
+export const walletAddressValidator = vine.compile<WalletAddressSchema>(
   vine.object({
     address: vine
       .string({
@@ -20,4 +24,4 @@ export const walletAddressValidator = vine.compile(
   })
 )
 
-export type WalletAddressSchema = vine.infer<typeof walletAddressValidator>
+export type { WalletAddressSchema }

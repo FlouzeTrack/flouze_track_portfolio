@@ -1,4 +1,4 @@
-import vine from '@vinejs/vine'
+import vine, { Schema } from '@vinejs/vine'
 
 /**
  * Validator for Ethereum wallet address

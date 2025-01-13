@@ -1,5 +1,6 @@
 import ETHPrice from '#models/eth_price'
 import { HttpContext } from '@adonisjs/core/http'
+import { currencyValidator } from '#validators/currency'
 
 export default class PriceController {
   public async getPrices({ response }: any) {
@@ -12,7 +13,6 @@ export default class PriceController {
       const payload = await this.currencyValidator.validate({
         currency: request.param('currency', 'ETH'),
       })
-      const currency = request.param('currency', 'ETH')
 
       return { message: 'Prices fetched successfully' }
     } catch (error) {

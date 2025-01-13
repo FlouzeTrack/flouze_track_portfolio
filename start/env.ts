@@ -19,6 +19,7 @@ export default await Env.create(new URL('../', import.meta.url), {
   LOG_LEVEL: Env.schema.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']),
   CRYPTOCOMPARE_API_KEY: Env.schema.string(),
   CRYPTOCOMPARE_API_URL: Env.schema.string(),
+  ETHERSCAN_KEY: Env.schema.string(),
 
   /*
   |----------------------------------------------------------

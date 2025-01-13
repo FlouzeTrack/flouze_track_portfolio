@@ -1,6 +1,6 @@
 import ETHPrice from '#models/eth_price'
 import env from '#start/env'
-import { CryptoCompareApiResponse } from '../type/price_data_type.js'
+import { CryptoCompareApiResponse } from '../type/price_data.js'
 import dayjs from 'dayjs'
 
 export default class PriceService {
@@ -8,7 +8,8 @@ export default class PriceService {
   private readonly apiKey: string = env.get('CRYPTOCOMPARE_API_KEY')
 
   public async fetchPrices(currency?: string): Promise<void> {
-    const url = `${this.apiUrl}${this.apiKey}`
+    const fetchCurrency = currency || 'ETH'
+    const url = `${this.apiUrl}${currency}${this.apiKey}`
     console.log('Fetching prices from : ', url)
     const response = await fetch(url)
 

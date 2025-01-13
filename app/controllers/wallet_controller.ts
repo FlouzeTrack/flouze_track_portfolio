@@ -1,12 +1,12 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
-import { errors } from '@vinejs/vine'
 import EtherscanService from '#services/etherscan_service'
 import WalletService from '#services/wallet_service'
 import { walletAddressValidator } from '#validators/wallet/address'
 
+@inject()
 export default class WalletController {
-  constructor(@inject() private etherscanService: EtherscanService) {}
+  constructor(private etherscanService: EtherscanService) {}
 
   private get walletService(): WalletService {
     return new WalletService(this.etherscanService)
@@ -21,13 +21,6 @@ export default class WalletController {
       const walletInfo = await this.walletService.getWalletInfo(payload.address)
       return response.json(walletInfo)
     } catch (error) {
-      if (error instanceof errors.E_VALIDATION_ERROR) {
-        return response.status(400).json({
-          error: 'Validation failure',
-          message: 'Invalid Ethereum address format',
-        })
-      }
-
       return response.status(500).json({
         error: 'Failed to fetch wallet data',
         message: error instanceof Error ? error.message : 'Unknown error',

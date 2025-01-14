@@ -9,6 +9,15 @@ export default class CryptoPriceSeeder extends BaseSeeder {
     const currency = 'ETH'
     const uniqueKey = 'timestamp'
 
+    // Check if there is any data in the table
+    const test = await CryptoPrice.query().select('id').first()
+
+    if (test) {
+      console.log('Data already exists in crypto_prices table')
+      return
+    }
+
+    // Fetch and save old prices
     let data = await apiCryptoCompareService.fetchPrices(currency)
 
     if (data.cryptoPrices.length > 0) {

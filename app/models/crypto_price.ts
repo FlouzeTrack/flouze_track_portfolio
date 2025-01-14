@@ -1,4 +1,3 @@
-import { DateTime } from 'luxon'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 
 export default class CryptoPrice extends BaseModel {
@@ -6,13 +5,7 @@ export default class CryptoPrice extends BaseModel {
   declare id: number
 
   @column()
-  declare timestamp: Date // Unix timestamp representing the date
-
-  @column()
-  declare open: number // Opening price of the cryptocurrency
-
-  @column()
-  declare close: number // Closing price of the cryptocurrency
+  declare timestamp: number // Unix timestamp representing the date
 
   @column()
   declare high: number // Highest price of the day
@@ -20,9 +13,9 @@ export default class CryptoPrice extends BaseModel {
   @column()
   declare low: number // Lowest price of the day
 
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
+  @column()
+  declare open: number // Opening price of the cryptocurrency
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime
+  @column()
+  declare close: number // Closing price of the cryptocurrency
 }

@@ -18,7 +18,7 @@ export default class CryptoPriceSeedController {
   public async seedCryptoPrice({ request, response }: HttpContext): Promise<any> {
     try {
       const currency = request.param('currency', 'ETH')
-      const prices = await this.cryptoPriceSeedService.fetchAndSavePrices(currency)
+      const prices = await this.cryptoPriceSeedService.fetchAndSaveOldPrices(currency)
       return response.json(prices)
     } catch (error: any) {
       console.error('Error while fetching:', error)

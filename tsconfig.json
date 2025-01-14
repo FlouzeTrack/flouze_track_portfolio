@@ -15,13 +15,14 @@
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "moduleResolution": "NodeNext",  // Changed to NodeNext
-    "module": "NodeNext",           // Changed to NodeNext
-    "target": "ESNext",            // Added for ES modules
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
+    "target": "ESNext",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "allowJs": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noEmit": false
   },
   "include": [
     "**/*"

@@ -12,5 +12,11 @@ export interface EthereumTransaction {
   value: string
   gasUsed: string
   isError: string
-  blockNumber: string
+}
+
+export interface TokenTransaction extends EthereumTransaction {
+  tokenName: string
+  tokenSymbol: string
+  tokenDecimal: string
+  contractAddress: string
 }

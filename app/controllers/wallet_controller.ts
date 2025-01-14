@@ -26,7 +26,8 @@ export default class WalletController {
         address: request.param('address', '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'),
       })
 
-      const walletInfo = await this.walletService.getWalletInfo(payload.address)
+      const currency = request.qs().currency?.toUpperCase()
+      const walletInfo = await this.walletService.getWalletInfo(payload.address, currency)
       return response.json(walletInfo)
     } catch (error) {
       this.errorHandler.handle(error, { request, response }, 'fetch wallet data')

@@ -1,7 +1,7 @@
 export interface FormattedTransaction {
   hash: string
-  symbol: 'ETH'
-  currency: 'ETH'
+  symbol: string
+  currency: string
   value: string
   date: string
   from: string

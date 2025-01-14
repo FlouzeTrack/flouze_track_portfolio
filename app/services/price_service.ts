@@ -9,7 +9,7 @@ export default class PriceService {
 
   public async fetchPrices(currency?: string): Promise<void> {
     const fetchCurrency = currency || 'ETH'
-    const url = `${this.apiUrl}${currency}${this.apiKey}`
+    const url = `${this.apiUrl}${fetchCurrency}${this.apiKey}`
     console.log('Fetching prices from : ', url)
     const response = await fetch(url)
 

@@ -5,15 +5,18 @@ services:
       dockerfile: Dockerfile
     ports:
       - '5010:5010'
-    env_file:
-      - .env
-    volumes:
-      - .:/app
-      - /app/node_modules
     environment:
       NODE_ENV: development
       HOST: 0.0.0.0
       PORT: 5010
+      DB_HOST: db 
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: app
+    volumes:
+      - .:/app
+      - /app/node_modules
     command: >
       sh -c "
         node ace migration:run &&
@@ -26,15 +29,15 @@ services:
   db:
     image: mysql:8.0
     restart: always
-    env_file:
-      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
     ports:
       - '3090:3306'
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test:
-        ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p${MYSQL_ROOT_PASSWORD}']
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5

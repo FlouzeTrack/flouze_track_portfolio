@@ -13,6 +13,11 @@ export default class CryptoPriceService {
     return price
   }
 
+  public async getLastPrice(): Promise<CryptoPrice | null> {
+    const price = await CryptoPrice.query().orderBy('timestamp', 'desc').first()
+    return price
+  }
+
   public async getCryptoPricesCount(): Promise<number> {
     const raws = await db.rawQuery('SELECT COUNT(*) AS count FROM crypto_prices;')
     const { count } = raws[0][0]

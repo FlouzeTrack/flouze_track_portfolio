@@ -1,6 +1,6 @@
 import type { EthereumTransaction } from '#types/etherscan'
 import type { FormattedTransaction, WalletResponse, TransactionExport } from '#types/wallet'
-import EtherscanService from './etherscan_service.js'
+import EtherscanService from './apis/etherscan_api_service.js'
 
 export default class WalletService {
   constructor(private etherscanService: EtherscanService) {}

@@ -2,7 +2,7 @@ import cron from 'node-cron'
 import type { ApplicationService } from '@adonisjs/core/types'
 import CryptoPriceService from '#services/crypto_price_service'
 import CryptoPriceSeedService from '#services/crypto_price_seed_service'
-import ApiCryptoCompareService from '#services/crypto_compare_service'
+import ApiCryptoCompareService from '#services/apis/crypto_compare_api_service'
 
 export default class CryptoPriceCronProvider {
   private cryptoPriceService: CryptoPriceService

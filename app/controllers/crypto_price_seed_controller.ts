@@ -2,7 +2,7 @@ import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import CryptoPriceService from '#services/crypto_price_service'
 import CryptoPriceSeedService from '#services/crypto_price_seed_service'
-import ApiCryptoCompareService from '#services/crypto_compare_service'
+import ApiCryptoCompareService from '#services/apis/crypto_compare_api_service'
 
 @inject()
 export default class CryptoPriceSeedController {

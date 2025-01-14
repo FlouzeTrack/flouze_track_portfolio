@@ -1,7 +1,8 @@
 import env from '#start/env'
 import type { EtherscanResponse, EthereumTransaction, TokenTransaction } from '#types/etherscan'
 import { TokenConfigService } from '#services/token_config_service'
-import { TokenType, SupportedToken } from '#types/currency'
+import { SupportedToken } from '#types/currency'
+import { TokenType } from '#enums/token_type_enum'
 
 export default class EtherscanService {
   private readonly baseUrl = 'https://api.etherscan.io/api'

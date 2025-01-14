@@ -1,6 +1,6 @@
 import { HttpContext } from '@adonisjs/core/http'
 import { inject } from '@adonisjs/core'
-import EtherscanService from '#services/etherscan_service'
+import EtherscanService from '#services/apis/etherscan_api_service'
 import WalletService from '#services/wallet_service'
 import { ExportService } from '#services/export_service'
 import { ErrorHandlerService } from '#services/error_handler_service'

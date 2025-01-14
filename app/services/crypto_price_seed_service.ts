@@ -1,4 +1,4 @@
-import CryptoCompareService from './crypto_compare_service.js'
+import CryptoCompareService from './apis/crypto_compare_api_service.js'
 import CryptoPriceService from './crypto_price_service.js'
 
 export default class CryptoPriceSeedService {

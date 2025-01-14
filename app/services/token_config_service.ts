@@ -1,4 +1,5 @@
-import { SupportedToken, TokenType } from '#types/currency'
+import { TokenType } from '#enums/token_type_enum'
+import { SupportedToken } from '#types/currency'
 
 export class TokenConfigService {
   private readonly tokens: Map<string, SupportedToken>

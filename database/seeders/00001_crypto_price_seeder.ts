@@ -1,5 +1,5 @@
 import CryptoPrice from '#models/crypto_price'
-import ApiCryptoCompareService from '#services/crypto_compare_service'
+import ApiCryptoCompareService from '#services/apis/crypto_compare_api_service'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class CryptoPriceSeeder extends BaseSeeder {

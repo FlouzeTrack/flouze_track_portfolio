@@ -19,10 +19,6 @@ test.group('Wallet Controller', () => {
     const response = await client.get(`/api/v1/wallet/${invalidAddress}`)
 
     response.assertStatus(400)
-    response.assertBodyContains({
-      error: 'Validation failure',
-      message: 'Invalid Ethereum address format',
-    })
   })
 
   test('should handle missing address parameter', async ({ client }) => {

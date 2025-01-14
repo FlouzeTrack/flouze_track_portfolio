@@ -27,10 +27,10 @@ export default class PriceService {
     // Save the data to the database
     for (const price of prices) {
       // Format date to YYYY/MM/DD HH:MM:SS
-      const formattedTimestamp = dayjs.unix(price.time).toDate()
+      // const formattedTimestamp = dayjs.unix(price.time).toDate()
 
       await CryptoPrice.create({
-        timestamp: formattedTimestamp,
+        timestamp: price.time,
         open: price.open,
         close: price.close,
         high: price.high,

@@ -28,6 +28,7 @@ declare module '@vinejs/vine' {
     compile: <T>(schema: any) => {
       validate: (data: any) => Promise<T>
     }
+    enum: (values: Record<string, string>) => any
     object: (schema: Record<string, any>) => any
     string: (options?: {
       trim?: boolean

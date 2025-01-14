@@ -8,5 +8,6 @@ router
       }
     })
     router.get('/wallet/:address?', '#controllers/wallet_controller.getTransactions')
+    router.get('/prices/:currency?', '#controllers/price_controller.fetchPrices')
   })
   .prefix('api/v1')

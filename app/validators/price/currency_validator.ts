@@ -1,21 +1,18 @@
 import vine from '@vinejs/vine'
+import { AvailableCurrencies } from '#types/currency_enum'
 
+/**
+ * Validator for currency
+ */
 interface CurrencySchema {
   currency: string
 }
 
-enum AvailableCurrencies {
-  ETH = 'ETH',
-  BTC = 'BTC',
-  LTC = 'LTC',
-  // Add other currencies as needed
-}
-
 export const currencyValidator = vine.compile<CurrencySchema>(
   vine.object({
-    currency: vine.enum(AvailableCurrencies).string({
+    currency: vine.enum(AvailableCurrencies, {
       messages: {
-        required: 'This currency is not supported',
+        required: 'This currency is required',
         enum: 'The currency must be one of the available types',
       },
     }),

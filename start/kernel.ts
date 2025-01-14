@@ -4,26 +4,26 @@ import server from '@adonisjs/core/services/server'
 import CryptoCompareService from '#services/crypto_compare_service'
 import PriceService from '#services/price_service'
 
-const cryptoCompareService = new CryptoCompareService()
-const priceService = new PriceService(cryptoCompareService)
+// const cryptoCompareService = new CryptoCompareService()
+// const priceService = new PriceService(cryptoCompareService)
 
-cron.schedule(
-  // '0 0 * * *',
-  '* * * * *',
-  async () => {
-    try {
-      console.log('Fetching currency prices...')
-      await priceService.fetchAndSavePrices('ETH')
-      console.log('Prices fetched successfully:')
-    } catch (error) {
-      console.error('Error fetching prices: ', error)
-    }
-  },
-  {
-    scheduled: true,
-    timezone: 'Europe/Paris', // Set your desired timezone
-  }
-)
+// cron.schedule(
+//   // '0 0 * * *',
+//   '* * * * *',
+//   async () => {
+//     try {
+//       console.log('Fetching currency prices...')
+//       await priceService.fetchAndSavePrices('ETH')
+//       console.log('Prices fetched successfully:')
+//     } catch (error) {
+//       console.error('Error fetching prices: ', error)
+//     }
+//   },
+//   {
+//     scheduled: true,
+//     timezone: 'Europe/Paris', // Set your desired timezone
+//   }
+// )
 
 /**
  * The error handler is used to convert an exception

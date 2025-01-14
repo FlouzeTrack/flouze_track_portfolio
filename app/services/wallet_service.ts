@@ -5,38 +5,51 @@ import EtherscanService from './etherscan_service.js'
 export default class WalletService {
   constructor(private etherscanService: EtherscanService) {}
 
-  public async getWalletInfo(address: string): Promise<WalletResponse> {
+  public async getWalletInfo(address: string, currency?: string): Promise<WalletResponse> {
     const [transactions, balance] = await Promise.all([
-      this.etherscanService.getTransactions(address),
+      this.getTransactionsByCurrency(address, currency),
       this.etherscanService.getBalance(address),
     ])
 
     return {
       address,
       ethBalance: this.formatBalance(balance),
-      transactions: this.formatTransactions(transactions),
+      transactions: this.formatTransactions(transactions, currency),
     }
   }
 
-  public async exportTransactions(address: string): Promise<TransactionExport[]> {
-    const transactions = await this.etherscanService.getTransactions(address)
+  private async getTransactionsByCurrency(
+    address: string,
+    currency: string = 'ETH'
+  ): Promise<EthereumTransaction[]> {
+    return this.etherscanService.getTransactions(address, currency)
+  }
+
+  public async exportTransactions(
+    address: string,
+    currency: string = 'ETH'
+  ): Promise<TransactionExport[]> {
+    const transactions = await this.getTransactionsByCurrency(address, currency)
     return transactions.slice(0, 10).map((tx) => ({
       hash: tx.hash,
       date: this.formatTimestamp(tx.timeStamp),
       from: tx.from,
       to: tx.to,
       value: this.formatEtherValue(tx.value),
-      currency: 'ETH',
+      currency: currency.toUpperCase(),
       gasUsed: tx.gasUsed,
       status: tx.isError === '1' ? 'Failed' : 'Success',
     }))
   }
 
-  private formatTransactions(transactions: EthereumTransaction[]): FormattedTransaction[] {
+  private formatTransactions(
+    transactions: EthereumTransaction[],
+    currency: string = 'ETH'
+  ): FormattedTransaction[] {
     return transactions.slice(0, 10).map((tx) => ({
       hash: tx.hash,
-      symbol: 'ETH',
-      currency: 'ETH',
+      symbol: currency.toUpperCase(),
+      currency: currency.toUpperCase(),
       value: this.formatEtherValue(tx.value),
       date: this.formatTimestamp(tx.timeStamp),
       from: tx.from,

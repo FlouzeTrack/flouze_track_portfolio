@@ -24,5 +24,5 @@ export interface TransactionExport {
   value: string
   currency: string
   gasUsed: string
-  status: string
+  status: 'Success' | 'Failed'
 }

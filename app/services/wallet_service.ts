@@ -1,5 +1,5 @@
 import type { EthereumTransaction } from '#types/etherscan'
-import type { FormattedTransaction, WalletResponse } from '#types/wallet'
+import type { FormattedTransaction, WalletResponse, TransactionExport } from '#types/wallet'
 import EtherscanService from './etherscan_service.js'
 
 export default class WalletService {
@@ -16,6 +16,20 @@ export default class WalletService {
       ethBalance: this.formatBalance(balance),
       transactions: this.formatTransactions(transactions),
     }
+  }
+
+  public async exportTransactions(address: string): Promise<TransactionExport[]> {
+    const transactions = await this.etherscanService.getTransactions(address)
+    return transactions.slice(0, 10).map((tx) => ({
+      hash: tx.hash,
+      date: this.formatTimestamp(tx.timeStamp),
+      from: tx.from,
+      to: tx.to,
+      value: this.formatEtherValue(tx.value),
+      currency: 'ETH',
+      gasUsed: tx.gasUsed,
+      status: tx.isError === '1' ? 'Failed' : 'Success',
+    }))
   }
 
   private formatTransactions(transactions: EthereumTransaction[]): FormattedTransaction[] {

@@ -22,10 +22,15 @@ export default class EtherscanService {
   ): Promise<EtherscanResponse<T>> {
     const url = `${this.baseUrl}?module=${module}&action=${action}&address=${address}&sort=desc&apikey=${this.apiKey}`
     const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
     const data = (await response.json()) as EtherscanResponse<T>
 
-    if (data.status !== '1' && data.message !== 'OK') {
-      throw new Error(`Etherscan API error: ${data.message || 'Unknown error'}`)
+    if (!data || data.status !== '1') {
+      throw new Error(data.message || 'Failed to fetch data from Etherscan')
     }
 
     return data

@@ -1,11 +1,16 @@
+import CryptoCompareMapper from '#mappers/crypto_compare_mapper'
 import env from '#start/env'
-import { PriceDataType } from '../type/price_data.js'
+import { RawCryptoCompareData } from '#types/cyrpto_compare_type'
+import { FormattedCryptoPriceDataType } from '#types/formated_cyrpto_price_type'
 
-export default class CryptoCompareService {
+export default class ApiCryptoCompareService {
   private readonly apiUrl: string = env.get('CRYPTOCOMPARE_API_URL')
   private readonly apiKey: string = env.get('CRYPTOCOMPARE_API_KEY')
 
-  public async fetchPrices(currency?: string, timestamp?: number): Promise<PriceDataType> {
+  public async fetchPrices(
+    currency?: string,
+    timestamp?: number
+  ): Promise<FormattedCryptoPriceDataType> {
     const fetchCurrency = currency || 'ETH'
     const fetchTimestamp = timestamp ? `&toTs=${timestamp}` : ''
     const url = `${this.apiUrl}?tsym=USD&limit=2000&fsym=${fetchCurrency}${fetchTimestamp}${this.apiKey}`
@@ -17,12 +22,7 @@ export default class CryptoCompareService {
       throw new Error('Network response was not ok')
     }
 
-    const data = (await response.json()) as unknown as PriceDataType
-
-    if (!data.Data) {
-      throw new Error('Invalid response structure')
-    }
-
-    return data
+    const rawData = (await response.json()) as RawCryptoCompareData
+    return CryptoCompareMapper.toCryptoPriceData(rawData)
   }
 }

@@ -5,14 +5,16 @@ export default class extends BaseSchema {
 
   async up() {
     this.schema.createTable(this.tableName, (table) => {
-      table.increments('id')
+      table.uuid('id').primary()
       table.timestamp('created_at').notNullable()
-      table.integer('quantity').notNullable()
+      table.timestamp('updated_at').notNullable()
+      table.timestamp('date').notNullable()
+      table.string('value').notNullable()
       table.boolean('is_error').notNullable()
-      table.integer('gas_used').notNullable()
+      table.string('gas_used').notNullable()
       table.string('hash').notNullable()
-      table.string('from').notNullable().references('id').inTable('wallets')
-      table.string('to').notNullable().references('id').inTable('wallets')
+      table.uuid('from').notNullable().references('id').inTable('wallets')
+      table.uuid('to').notNullable().references('id').inTable('wallets')
       table.integer('crypto_id').notNullable().unsigned().references('id').inTable('cryptos')
     })
   }

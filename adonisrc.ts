@@ -33,6 +33,7 @@ export default defineConfig({
     () => import('@adonisjs/lucid/database_provider'),
     () => import('@adonisjs/auth/auth_provider'),
     () => import('./providers/crypto_prices_cron_provider.js'),
+    () => import('./providers/crypto_cron_provider.js'),
     () => import('@adonisjs/limiter/limiter_provider'),
     () => import('@adonisjs/redis/redis_provider'),
   ],

@@ -3,7 +3,7 @@ import type {
   FormattedTransaction,
   WalletResponse,
   TransactionExport,
-  DailyBalance,
+  BalanceHistory,
 } from '#types/wallet'
 import EtherscanService from './apis/etherscan_api_service.js'
 import { BalanceCalculator } from './balance_calculator_service.js'
@@ -26,7 +26,7 @@ export default class WalletService {
 
   public async getBalanceHistory(address: string): Promise<{
     currentBalance: string
-    history: DailyBalance[]
+    history: BalanceHistory[]
   }> {
     const [transactions, currentBalance] = await Promise.all([
       this.getTransactionsByCurrency(address),
@@ -34,8 +34,8 @@ export default class WalletService {
     ])
 
     const calculator = new BalanceCalculator(address)
-    const dailyBalances = calculator.calculateDailyBalances(transactions)
-    const history = calculator.formatDailyBalances(dailyBalances)
+    const balances = calculator.calculateBalanceHistory(transactions)
+    const history = calculator.formatBalanceHistory(balances)
 
     return {
       currentBalance,

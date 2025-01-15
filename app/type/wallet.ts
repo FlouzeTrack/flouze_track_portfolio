@@ -29,7 +29,7 @@ export interface TransactionExport {
   status: 'Success' | 'Failed'
 }
 
-export interface DailyBalance {
+export interface BalanceHistory {
   timestamp: number
-  ethValue: string
+  value: string
 }

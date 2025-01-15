@@ -1,4 +1,5 @@
 import router from '@adonisjs/core/services/router'
+import { throttle } from './limiter.js'
 const CryptoPriceController = () => import('#controllers/crypto_price_controller')
 const WalletController = () => import('#controllers/wallet_controller')
 
@@ -22,5 +23,6 @@ router
           .prefix('/prices')
       })
       .prefix('/v1')
+      .use(throttle)
   })
   .prefix('/api')

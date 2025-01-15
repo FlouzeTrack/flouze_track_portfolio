@@ -30,7 +30,7 @@ export default class WalletService {
     currency: string = 'ETH'
   ): Promise<TransactionExport[]> {
     const transactions = await this.getTransactionsByCurrency(address, currency)
-    return transactions.slice(0, 10).map((tx) => ({
+    return transactions.map((tx) => ({
       hash: tx.hash,
       date: this.formatTimestamp(tx.timeStamp),
       from: tx.from,
@@ -46,7 +46,7 @@ export default class WalletService {
     transactions: EthereumTransaction[],
     currency: string = 'ETH'
   ): FormattedTransaction[] {
-    return transactions.slice(0, 10).map((tx) => ({
+    return transactions.map((tx) => ({
       hash: tx.hash,
       symbol: currency.toUpperCase(),
       currency: currency.toUpperCase(),
@@ -55,7 +55,9 @@ export default class WalletService {
       from: tx.from,
       to: tx.to,
       isError: tx.isError === '1',
+      gas: tx.gas,
       gasUsed: tx.gasUsed,
+      gasPrice: tx.gasPrice,
     }))
   }
 

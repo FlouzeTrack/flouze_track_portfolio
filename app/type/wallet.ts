@@ -7,7 +7,9 @@ export interface FormattedTransaction {
   from: string
   to: string
   isError: boolean
+  gas: string
   gasUsed: string
+  gasPrice: string
 }
 
 export interface WalletResponse {

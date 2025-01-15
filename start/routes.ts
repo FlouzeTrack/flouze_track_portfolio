@@ -1,4 +1,5 @@
 import router from '@adonisjs/core/services/router'
+import { throttle } from './limiter.js'
 
 router
   .group(() => {
@@ -17,5 +18,6 @@ router
         router.get('/prices/:currency?', '#controllers/price_controller.fetchPrices')
       })
       .prefix('/v1')
+      .use(throttle)
   })
   .prefix('/api')

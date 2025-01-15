@@ -6,8 +6,10 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
+      table.timestamp('created_at').notNullable()
+      table.timestamp('updated_at').notNullable()
       table.integer('quantity')
-      table.string('wallet_id').notNullable().references('id').inTable('wallets')
+      table.uuid('wallet_id').notNullable().references('id').inTable('wallets')
       table.integer('crypto_id').unsigned().notNullable().references('id').inTable('cryptos')
     })
   }

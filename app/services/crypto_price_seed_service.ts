@@ -1,9 +1,9 @@
-import CryptoCompareService from './apis/crypto_compare_api_service.js'
+import ApiCryptoCompareService from './apis/crypto_compare_api_service.js'
 import CryptoPriceService from './crypto_price_service.js'
 
 export default class CryptoPriceSeedService {
   constructor(
-    private cryptoCompareService: CryptoCompareService,
+    private cryptoCompareService: ApiCryptoCompareService,
     private cryptoPriceService: CryptoPriceService
   ) {}
 

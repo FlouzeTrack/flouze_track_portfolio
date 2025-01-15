@@ -2,6 +2,7 @@ import CryptoCompareMapper from '#mappers/crypto_compare_mapper'
 import env from '#start/env'
 import { RawCryptoCompareData } from '#types/cyrpto_compare_type'
 import { FormattedCryptoPriceDataType } from '#types/formated_cyrpto_price_type'
+import { FormattedCryptoDataType } from '#types/formated_cyrpto_type'
 
 export default class ApiCryptoCompareService {
   private readonly apiUrl: string = env.get('CRYPTOCOMPARE_API_URL')
@@ -24,5 +25,20 @@ export default class ApiCryptoCompareService {
 
     const rawData = (await response.json()) as RawCryptoCompareData
     return CryptoCompareMapper.toCryptoPriceData(rawData)
+  }
+
+  public async fetchCryptoLastValue(currency?: string): Promise<FormattedCryptoDataType> {
+    const fetchCurrency = currency || 'ETH'
+    const url = `${this.apiUrl}?tsym=USD&limit=1&fsym=${fetchCurrency}${this.apiKey}`
+
+    console.log('Fetching crypto from : ', url)
+    const response = await fetch(url)
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok')
+    }
+
+    const rawData = (await response.json()) as RawCryptoCompareData
+    return CryptoCompareMapper.toCryptoData(rawData, 'Ethereum', 'ETH')
   }
 }

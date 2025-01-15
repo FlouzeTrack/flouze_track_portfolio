@@ -34,6 +34,19 @@ export default class WalletController {
     }
   }
 
+  public async getBalances({ request, response }: HttpContext): Promise<void> {
+    try {
+      const payload = await walletAddressValidator.validate({
+        address: request.param('address', '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'),
+      })
+
+      const balanceData = await this.walletService.getBalanceHistory(payload.address)
+      return response.json(balanceData)
+    } catch (error) {
+      this.errorHandler.handle(error, { request, response }, 'fetch balance history')
+    }
+  }
+
   public async exportTransactions({ request, response }: HttpContext): Promise<void> {
     try {
       const payload = await walletAddressValidator.validate({

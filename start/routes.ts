@@ -14,6 +14,7 @@ router
           .group(() => {
             router.get('/:address?', [WalletController, 'getTransactions'])
             router.get('/:address/export', [WalletController, 'getTransactions'])
+            router.get('/:address/balances', [WalletController, 'getBalances'])
           })
           .prefix('/wallet')
         router

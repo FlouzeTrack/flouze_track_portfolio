@@ -38,7 +38,7 @@ export default class EtherscanService {
     return transactions
       .flat()
       .sort((a, b) => Number(b.timeStamp) - Number(a.timeStamp))
-      .slice(0, limit)
+      .slice(0)
   }
 
   public async getBalance(address: string): Promise<string> {
@@ -53,8 +53,13 @@ export default class EtherscanService {
         offset: '10000',
       })
 
-      // Get internal transactions (optional)
-      let internalTxs = { result: [] }
+      // Get internal transactions
+      let internalTxs: EtherscanResponse<EthereumTransaction[]> = {
+        status: '1',
+        message: 'OK',
+        result: [],
+      }
+
       try {
         internalTxs = await this.fetchData<EthereumTransaction[]>(
           'account',

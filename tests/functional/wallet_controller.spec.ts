@@ -85,7 +85,7 @@ test.group('Wallet Controller', () => {
     assert.exists(lastBalance)
 
     // Convert both balances to BigInt for comparison
-    const calculatedBalanceWei = BigInt(lastBalance.ethValue)
+    const calculatedBalanceWei = BigInt(lastBalance.value)
     const etherscanBalanceWei = BigInt(currentBalance)
 
     // Calculate difference in ETH (divide by 1e18)

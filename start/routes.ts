@@ -15,7 +15,7 @@ router
           })
           .prefix('/wallet')
 
-        router.get('/prices/:currency?', '#controllers/price_controller.fetchPrices')
+        router.get('/prices/prices', '#controllers/crypto_price_controller.getPrices')
       })
       .prefix('/v1')
       .use(throttle)

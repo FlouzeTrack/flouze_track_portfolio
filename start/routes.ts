@@ -1,20 +1,25 @@
 import router from '@adonisjs/core/services/router'
+const CryptoPriceController = () => import('#controllers/crypto_price_controller')
+const WalletController = () => import('#controllers/wallet_controller')
+
+// Health check endpoint
+router.get('/', async () => ({ status: 'ok' }))
 
 router
   .group(() => {
-    // Health check endpoint
-    router.get('/health', async () => ({ status: 'ok' }))
-
     router
       .group(() => {
         router
           .group(() => {
-            router.get('/:address?', '#controllers/wallet_controller.getTransactions')
-            router.get('/:address/export', '#controllers/wallet_controller.exportTransactions')
+            router.get('/:address?', [WalletController, 'getTransactions'])
+            router.get('/:address/export', [WalletController, 'getTransactions'])
           })
           .prefix('/wallet')
-
-        router.get('/prices/:currency?', '#controllers/price_controller.fetchPrices')
+        router
+          .group(() => {
+            router.get('/', [CryptoPriceController, 'getPrices'])
+          })
+          .prefix('/prices')
       })
       .prefix('/v1')
   })

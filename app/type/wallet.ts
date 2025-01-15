@@ -28,3 +28,8 @@ export interface TransactionExport {
   gasUsed: string
   status: 'Success' | 'Failed'
 }
+
+export interface DailyBalance {
+  timestamp: number
+  ethValue: string
+}

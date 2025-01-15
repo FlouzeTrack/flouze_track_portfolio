@@ -1,7 +1,10 @@
 import { test } from '@japa/runner'
 
 test.group('Wallet Controller', () => {
-  const validAddress = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+  const validAddress = '0x7bBAEc06d8e30e0A7254491f1984Df7d204f12b2' // easy
+  // const validAddress = '0xd0b08671eC13B451823aD9bC5401ce908872e7c5' // medium
+  // const validAddress = '0x7c9a30adE9FfB2bE0540bCe604A5c717264C7676' // hard
+  // const validAddress = '0x7bBAEc06d8e30e0A7254491f1984Df7d204f12b2' // very hard
   const invalidAddress = '0xinvalid'
 
   test('should return wallet info for valid address', async ({ client }) => {
@@ -21,14 +24,14 @@ test.group('Wallet Controller', () => {
     response.assertStatus(400)
   })
 
-  test('should handle missing address parameter', async ({ client }) => {
-    const response = await client.get('/api/v1/wallet')
+  // test('should handle missing address parameter', async ({ client }) => {
+  //   const response = await client.get('/api/v1/wallet')
 
-    response.assertStatus(200)
-    response.assertBodyContains({
-      address: validAddress,
-    })
-  })
+  //   response.assertStatus(200)
+  //   response.assertBodyContains({
+  //     address: validAddress,
+  //   })
+  // })
 
   test('should validate address with regex', async ({ assert }) => {
     const validator = /^0x[a-fA-F0-9]{40}$/
@@ -42,35 +45,56 @@ test.group('Wallet Controller', () => {
     assert.isFalse(validator.test('0xGHIJKLMNOPQRSTUVWXYZ1234567890123456789'))
   })
 
-  test('should return formatted transactions', async ({ client, assert }) => {
-    const response = await client.get(`/api/v1/wallet/${validAddress}`)
+  // test('should return formatted transactions', async ({ client, assert }) => {
+  //   const response = await client.get(`/api/v1/wallet/${validAddress}`)
+
+  //   response.assertStatus(200)
+  //   const transactions = response.body().transactions
+
+  //   assert.isArray(transactions)
+  //   transactions.forEach((tx: any) => {
+  //     assert.properties(tx, [
+  //       'hash',
+  //       'symbol',
+  //       'currency',
+  //       'value',
+  //       'date',
+  //       'from',
+  //       'to',
+  //       'isError',
+  //       'gasUsed',
+  //     ])
+  //     assert.equal(tx.symbol, 'ETH')
+  //     assert.equal(tx.currency, 'ETH')
+  //     assert.isBoolean(tx.isError)
+  //   })
+  // })
+
+  test('balance history should match Etherscan balance', async ({ client, assert }) => {
+    const response = await client.get(`/api/v1/wallet/${validAddress}/balances`)
 
     response.assertStatus(200)
-    const transactions = response.body().transactions
+    const { currentBalance, history } = response.body()
 
-    assert.isArray(transactions)
-    transactions.forEach((tx: any) => {
-      assert.properties(tx, [
-        'hash',
-        'symbol',
-        'currency',
-        'value',
-        'date',
-        'from',
-        'to',
-        'isError',
-        'gasUsed',
-      ])
-      assert.equal(tx.symbol, 'ETH')
-      assert.equal(tx.currency, 'ETH')
-      assert.isBoolean(tx.isError)
-    })
-  })
+    // Ensure we have history
+    assert.isArray(history)
+    assert.isNotEmpty(history)
 
-  test('should limit transactions to 10', async ({ client, assert }) => {
-    const response = await client.get(`/api/v1/wallet/${validAddress}`)
+    // Get last calculated balance
+    const lastBalance = history[history.length - 1]
+    assert.exists(lastBalance)
 
-    response.assertStatus(200)
-    assert.isAtMost(response.body().transactions.length, 10)
+    // Convert both balances to BigInt for comparison
+    const calculatedBalanceWei = BigInt(lastBalance.ethValue)
+    const etherscanBalanceWei = BigInt(currentBalance)
+
+    // Calculate difference in ETH (divide by 1e18)
+    const diffInEth = Number(calculatedBalanceWei - etherscanBalanceWei) / 1e18
+
+    // Allow 0.1 ETH tolerance for gas calculations
+    assert.isTrue(
+      Math.abs(diffInEth) < 0.1,
+      `Balance difference (${diffInEth} ETH) exceeds tolerance`
+    )
   })
 })

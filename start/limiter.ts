@@ -10,8 +10,13 @@
 */
 
 import limiter from '@adonisjs/limiter/services/main'
+import app from '@adonisjs/core/services/app'
 
 export const throttle = limiter.define('global', () => {
+  // Skip rate limiting in test environment
+  if (app.inTest) {
+    return limiter.allowRequests(1000).every('1 second')
+  }
   return limiter
     .allowRequests(5)
     .every('1 minute')

@@ -10,7 +10,9 @@ export interface EthereumTransaction {
   from: string
   to: string
   value: string
+  gas: string
   gasUsed: string
+  gasPrice: string
   isError: string
 }
 

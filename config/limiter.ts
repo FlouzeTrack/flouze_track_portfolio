@@ -1,8 +1,9 @@
 import env from '#start/env'
+import app from '@adonisjs/core/services/app'
 import { defineConfig, stores } from '@adonisjs/limiter'
 
 const limiterConfig = defineConfig({
-  default: env.get('LIMITER_STORE'),
+  default: app.inTest ? 'memory' : env.get('LIMITER_STORE'),
   stores: {
     /**
      * Redis store to save rate limiting data inside a

@@ -28,8 +28,7 @@ export default class EtherscanService {
   }
 
   public async getAllTransactions(
-    address: string,
-    limit: number = 10
+    address: string
   ): Promise<(EthereumTransaction | TokenTransaction)[]> {
     const transactions = await Promise.all([
       this.getEthTransactions(address),
@@ -48,8 +47,39 @@ export default class EtherscanService {
   }
 
   private async getEthTransactions(address: string): Promise<EthereumTransaction[]> {
-    const response = await this.fetchData<EthereumTransaction[]>('account', 'txlist', address)
-    return response.result
+    try {
+      // Get normal transactions
+      const normalTxs = await this.fetchData<EthereumTransaction[]>('account', 'txlist', address, {
+        offset: '10000',
+      })
+
+      // Get internal transactions (optional)
+      let internalTxs = { result: [] }
+      try {
+        internalTxs = await this.fetchData<EthereumTransaction[]>(
+          'account',
+          'txlistinternal',
+          address,
+          {
+            offset: '10000',
+          }
+        )
+      } catch (error) {
+        // Ignore internal tx errors
+      }
+
+      // Return empty array if no transactions
+      if (!normalTxs.result?.length && !internalTxs.result?.length) {
+        return []
+      }
+
+      // Combine and sort all transactions
+      return [...(normalTxs.result || []), ...(internalTxs.result || [])].sort(
+        (a, b) => Number(b.timeStamp) - Number(a.timeStamp)
+      )
+    } catch (error) {
+      throw new Error('Failed to fetch transactions')
+    }
   }
 
   private async getTokenTransactions(
@@ -58,6 +88,7 @@ export default class EtherscanService {
   ): Promise<EthereumTransaction[]> {
     const response = await this.fetchData<EthereumTransaction[]>('account', 'tokentx', address, {
       contractaddress: contractAddress,
+      offset: '10000',
     })
     return response.result
   }

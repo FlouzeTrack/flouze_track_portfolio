@@ -3,9 +3,20 @@ import { FormatedCryptoPriceType } from '#types/formated_cyrpto_price_type'
 import db from '@adonisjs/lucid/services/db'
 
 export default class CryptoPriceService {
-  public async getAllPrices(): Promise<CryptoPrice[]> {
-    const prices = await CryptoPrice.query().orderBy('timestamp', 'desc')
-    return prices
+  public async getAllPrices(startDate?: string, endDate?: string): Promise<CryptoPrice[]> {
+    const query = CryptoPrice.query().orderBy('timestamp', 'asc')
+
+    if (startDate) {
+      const startTimestamp = Math.floor(new Date(startDate).getTime() / 1000)
+      query.where('timestamp', '>=', startTimestamp)
+    }
+
+    if (endDate) {
+      const endTimestamp = Math.floor(new Date(endDate).getTime() / 1000)
+      query.where('timestamp', '<=', endTimestamp)
+    }
+
+    return await query
   }
 
   public async getPriceByTimeStamp(timeStamp: number): Promise<CryptoPrice | null> {

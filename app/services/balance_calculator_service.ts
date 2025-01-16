@@ -1,21 +1,40 @@
 import type { EthereumTransaction } from '#types/etherscan'
 import type { BalanceHistory } from '#types/wallet'
 import { formatTimestamp } from '#utils/date'
+import { DateFilterRule } from '#rules/date_filter_rules'
 
 export class BalanceCalculator {
-  constructor(private readonly address: string) {}
+  constructor(
+    private readonly address: string,
+    private readonly startDate?: string,
+    private readonly endDate?: string
+  ) {}
 
   public calculateBalanceHistory(transactions: EthereumTransaction[]): Map<string, bigint> {
     const balances = new Map<string, bigint>()
     let cumulativeBalance = BigInt(0)
 
+    // Calculate cumulative balance for all transactions
     transactions.forEach((tx) => {
-      const timestamp = tx.timeStamp
       cumulativeBalance = this.updateBalance(cumulativeBalance, tx)
-      balances.set(timestamp, cumulativeBalance)
+      balances.set(tx.timeStamp, cumulativeBalance)
     })
 
-    return balances
+    // Return full history if no date filter specified
+    if (!this.startDate && !this.endDate) {
+      return balances
+    }
+
+    // Filter balances by date range
+    const dateRule = new DateFilterRule(this.startDate, this.endDate)
+    const filteredBalances = new Map<string, bigint>()
+
+    for (const [timestamp, balance] of balances) {
+      if (dateRule.isValid({ timeStamp: timestamp } as EthereumTransaction)) {
+        filteredBalances.set(timestamp, balance)
+      }
+    }
+    return filteredBalances
   }
 
   public formatBalanceHistory(balances: Map<string, bigint>): BalanceHistory[] {

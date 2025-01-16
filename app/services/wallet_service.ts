@@ -41,11 +41,11 @@ export default class WalletService {
     history: BalanceHistory[]
   }> {
     const [transactions, currentBalance] = await Promise.all([
-      this.getTransactionsByCurrency(address, currency, startDate, endDate),
+      this.getTransactionsByCurrency(address, currency),
       this.etherscanService.getBalance(address),
     ])
 
-    const calculator = new BalanceCalculator(address)
+    const calculator = new BalanceCalculator(address, startDate, endDate)
     const balances = calculator.calculateBalanceHistory(transactions)
     const history = calculator.formatBalanceHistory(balances)
 

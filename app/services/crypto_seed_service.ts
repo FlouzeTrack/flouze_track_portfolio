@@ -11,8 +11,7 @@ export default class CryptoPriceSeedService {
     let data = await this.cryptoCompareService.fetchCryptoLastValue(currency)
 
     if (data) {
-      const result = await this.cryptoService.updateCrypto(data)
-      console.log('CRYPTO', result)
+      await this.cryptoService.updateCrypto(data)
     }
   }
 }

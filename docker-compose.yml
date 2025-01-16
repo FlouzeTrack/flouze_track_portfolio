@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '5010:5010'
+    networks:
+      - backend
     environment:
       NODE_ENV: development
       HOST: 0.0.0.0
@@ -29,6 +31,8 @@ services:
       - .env
     ports:
       - '3090:3306'
+    networks:
+      - backend
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -42,8 +46,14 @@ services:
     image: redis:6.2
     ports:
       - '6379:6379'
+    networks:
+      - backend
     volumes:
       - redis_data:/data
+
+networks:
+  backend:
+    external: true
 
 volumes:
   mysql_data:

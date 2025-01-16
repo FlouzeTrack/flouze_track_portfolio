@@ -14,8 +14,13 @@ export class BalanceCalculator {
     const balances = new Map<string, bigint>()
     let cumulativeBalance = BigInt(0)
 
+    // Trier les transactions par ordre chronologique croissant
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => Number(a.timeStamp) - Number(b.timeStamp)
+    )
+
     // Calculate cumulative balance for all transactions
-    transactions.forEach((tx) => {
+    sortedTransactions.forEach((tx) => {
       cumulativeBalance = this.updateBalance(cumulativeBalance, tx)
       balances.set(tx.timeStamp, cumulativeBalance)
     })
@@ -34,6 +39,7 @@ export class BalanceCalculator {
         filteredBalances.set(timestamp, balance)
       }
     }
+
     return filteredBalances
   }
 

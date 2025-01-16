@@ -30,6 +30,6 @@ export interface TransactionExport {
 }
 
 export interface BalanceHistory {
-  timestamp: number
+  date: string
   value: string
 }

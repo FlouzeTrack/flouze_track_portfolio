@@ -27,7 +27,15 @@ export default class WalletController {
       })
 
       const currency = request.qs().currency?.toUpperCase()
-      const walletInfo = await this.walletService.getWalletInfo(payload.address, currency)
+      const startDate = request.qs().startDate
+      const endDate = request.qs().endDate
+
+      const walletInfo = await this.walletService.getWalletInfo(
+        payload.address,
+        currency,
+        startDate,
+        endDate
+      )
       return response.json(walletInfo)
     } catch (error) {
       this.errorHandler.handle(error, { request, response }, 'fetch wallet data')
@@ -40,7 +48,16 @@ export default class WalletController {
         address: request.param('address', '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'),
       })
 
-      const balanceData = await this.walletService.getBalanceHistory(payload.address)
+      const currency = request.qs().currency?.toUpperCase()
+      const startDate = request.qs().startDate
+      const endDate = request.qs().endDate
+
+      const balanceData = await this.walletService.getBalanceHistory(
+        payload.address,
+        currency,
+        startDate,
+        endDate
+      )
       return response.json(balanceData)
     } catch (error) {
       this.errorHandler.handle(error, { request, response }, 'fetch balance history')

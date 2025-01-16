@@ -1,5 +1,6 @@
 import type { EthereumTransaction } from '#types/etherscan'
 import type { BalanceHistory } from '#types/wallet'
+import { formatTimestamp } from '#utils/date'
 
 export class BalanceCalculator {
   constructor(private readonly address: string) {}
@@ -8,9 +9,7 @@ export class BalanceCalculator {
     const balances = new Map<string, bigint>()
     let cumulativeBalance = BigInt(0)
 
-    const sortedTransactions = this.sortTransactionsByTimestamp(transactions)
-
-    sortedTransactions.forEach((tx) => {
+    transactions.forEach((tx) => {
       const timestamp = tx.timeStamp
       cumulativeBalance = this.updateBalance(cumulativeBalance, tx)
       balances.set(timestamp, cumulativeBalance)
@@ -21,14 +20,11 @@ export class BalanceCalculator {
 
   public formatBalanceHistory(balances: Map<string, bigint>): BalanceHistory[] {
     return Array.from(balances.entries()).map(([timestamp, balance]) => ({
-      timestamp: Number(timestamp),
+      date: formatTimestamp(timestamp),
       value: balance.toString(),
     }))
   }
 
-  private sortTransactionsByTimestamp(transactions: EthereumTransaction[]): EthereumTransaction[] {
-    return [...transactions].sort((a, b) => Number(a.timeStamp) - Number(b.timeStamp))
-  }
   private updateBalance(currentBalance: bigint, tx: EthereumTransaction): bigint {
     const value = BigInt(tx.value)
     const gasCost = this.calculateGasCost(tx)

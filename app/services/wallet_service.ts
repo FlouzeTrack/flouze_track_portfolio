@@ -7,13 +7,20 @@ import type {
 } from '#types/wallet'
 import EtherscanService from './apis/etherscan_api_service.js'
 import { BalanceCalculator } from './balance_calculator_service.js'
+import { formatTimestamp } from '#utils/date'
+import { DateFilterRule } from '#rules/date_filter_rules'
 
 export default class WalletService {
   constructor(private etherscanService: EtherscanService) {}
 
-  public async getWalletInfo(address: string, currency?: string): Promise<WalletResponse> {
+  public async getWalletInfo(
+    address: string,
+    currency?: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<WalletResponse> {
     const [transactions, balance] = await Promise.all([
-      this.getTransactionsByCurrency(address, currency),
+      this.getTransactionsByCurrency(address, currency, startDate, endDate),
       this.etherscanService.getBalance(address),
     ])
 
@@ -24,12 +31,17 @@ export default class WalletService {
     }
   }
 
-  public async getBalanceHistory(address: string): Promise<{
+  public async getBalanceHistory(
+    address: string,
+    currency: string = 'ETH',
+    startDate?: string,
+    endDate?: string
+  ): Promise<{
     currentBalance: string
     history: BalanceHistory[]
   }> {
     const [transactions, currentBalance] = await Promise.all([
-      this.getTransactionsByCurrency(address),
+      this.getTransactionsByCurrency(address, currency, startDate, endDate),
       this.etherscanService.getBalance(address),
     ])
 
@@ -45,9 +57,18 @@ export default class WalletService {
 
   private async getTransactionsByCurrency(
     address: string,
-    currency: string = 'ETH'
+    currency: string = 'ETH',
+    startDate?: string,
+    endDate?: string
   ): Promise<EthereumTransaction[]> {
-    return this.etherscanService.getTransactions(address, currency)
+    const transactions = await this.etherscanService.getTransactions(address, currency)
+
+    if (!startDate && !endDate) {
+      return transactions
+    }
+
+    const dateRule = new DateFilterRule(startDate, endDate)
+    return transactions.filter((tx) => dateRule.isValid(tx))
   }
 
   public async exportTransactions(
@@ -57,7 +78,7 @@ export default class WalletService {
     const transactions = await this.getTransactionsByCurrency(address, currency)
     return transactions.map((tx) => ({
       hash: tx.hash,
-      date: this.formatTimestamp(tx.timeStamp),
+      date: formatTimestamp(tx.timeStamp),
       from: tx.from,
       to: tx.to,
       value: this.formatEtherValue(tx.value),
@@ -76,7 +97,7 @@ export default class WalletService {
       symbol: currency.toUpperCase(),
       currency: currency.toUpperCase(),
       value: this.formatEtherValue(tx.value),
-      date: this.formatTimestamp(tx.timeStamp),
+      date: formatTimestamp(tx.timeStamp),
       from: tx.from,
       to: tx.to,
       isError: tx.isError === '1',
@@ -92,9 +113,5 @@ export default class WalletService {
 
   private formatEtherValue(valueWei: string): string {
     return (Number(valueWei) / 1e18).toFixed(6)
-  }
-
-  private formatTimestamp(timestamp: string): string {
-    return new Date(Number(timestamp) * 1000).toISOString().split('T')[0]
   }
 }

@@ -166,7 +166,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
     // }
 
     // return user mapped using payload instead of database
-    this.user = { id: authUser.id, email: authUser.email }
+    this.user = { id: authUser.id }
 
     return this.getUserOrFail()
   }

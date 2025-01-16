@@ -20,6 +20,7 @@ router
         router
           .group(() => {
             router.get('/', [CryptoPriceController, 'getPrices'])
+            router.get('/kpis', [CryptoPriceController, 'getKPIs'])
           })
           .prefix('/prices')
       })

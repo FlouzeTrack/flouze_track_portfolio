@@ -113,6 +113,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
    * or throw an exception
    */
   async authenticate(): Promise<UserProvider[typeof symbols.PROVIDER_REAL_USER]> {
+    console.log('authenticate')
     /**
      * Avoid re-authentication when it has been done already
      * for the given request
@@ -131,6 +132,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
         guardDriverName: this.driverName,
       })
     }
+    console.log('authHeader', authHeader)
 
     /**
      * Split the header value and read the token from it
@@ -167,7 +169,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
 
     // return user mapped using payload instead of database
     this.user = { id: authUser.id }
-
+    console.log('authUser', this.user)
     return this.getUserOrFail()
   }
 

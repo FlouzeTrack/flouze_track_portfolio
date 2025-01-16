@@ -8,6 +8,7 @@ export default class AuthApiService {
     const response = await this.fetchData<AuthUser>('/auth/me', {
       Authorization: `Bearer ${token}`,
     })
+    console.log('response', response)
     return response
   }
 
@@ -24,6 +25,7 @@ export default class AuthApiService {
 
       return data
     } catch (error) {
+      console.error('Failed to fetch data', error)
       throw new Error('Failed to fetch data')
     }
   }

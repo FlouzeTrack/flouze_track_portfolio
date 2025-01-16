@@ -17,7 +17,7 @@ export default class CryptoPriceController {
     try {
       const isAuth = await auth.check()
       if (!isAuth) {
-        return response.unauthorized('You must be authenticated to access this route')
+        throw new Error('Unauthorized access')
       }
       const { startDate, endDate } = request.qs()
       if (!startDate || !endDate) {

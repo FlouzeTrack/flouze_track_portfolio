@@ -8,9 +8,11 @@ export default class Favorite extends BaseModel {
   declare id: string
 
   @column()
-  declare quantity: number
+  declare wallet_id: string
 
-  @belongsTo(() => Wallet)
+  @belongsTo(() => Wallet, {
+    foreignKey: 'wallet_id',
+  })
   declare wallet: BelongsTo<typeof Wallet>
 
   @column()

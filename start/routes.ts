@@ -2,6 +2,7 @@ import router from '@adonisjs/core/services/router'
 import { throttle } from './limiter.js'
 const CryptoPriceController = () => import('#controllers/crypto_price_controller')
 const WalletController = () => import('#controllers/wallet_controller')
+const FavoriteController = () => import('#controllers/favorite_controller')
 
 // Health check endpoint
 router.get('/', async () => ({ status: 'ok' }))
@@ -17,6 +18,12 @@ router
             router.get('/:address/balances', [WalletController, 'getBalances'])
           })
           .prefix('/wallet')
+        router
+          .group(() => {
+            router.get('/', [FavoriteController, 'getFavorites'])
+            router.post('/create', [FavoriteController])
+          })
+          .prefix('/favorites')
         router
           .group(() => {
             router.get('/', [CryptoPriceController, 'getPrices'])

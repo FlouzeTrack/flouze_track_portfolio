@@ -1,6 +1,7 @@
-import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Wallet from './wallet.js'
+import { BaseModel, beforeCreate, column } from '@adonisjs/lucid/orm'
+// import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
+// import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+// import Wallet from './wallet.js'
 import { v4 as uuidv4 } from 'uuid'
 
 export default class Favorite extends BaseModel {
@@ -8,12 +9,15 @@ export default class Favorite extends BaseModel {
   declare id: string
 
   @column()
-  declare wallet_id: string
+  declare wallet_address: string
 
-  @belongsTo(() => Wallet, {
-    foreignKey: 'wallet_id',
-  })
-  declare wallet: BelongsTo<typeof Wallet>
+  // @column()
+  // declare wallet_id: string
+
+  // @belongsTo(() => Wallet, {
+  //   foreignKey: 'wallet_id',
+  // })
+  // declare wallet: BelongsTo<typeof Wallet>
 
   @column()
   declare user_id: string

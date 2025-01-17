@@ -134,4 +134,63 @@ export default class EtherscanService {
 
     return data
   }
+
+  public async getLastTransaction(
+    address: string,
+    currency: string = 'ETH'
+  ): Promise<EthereumTransaction | TokenTransaction | null> {
+    const token = this.tokenConfig.getToken(currency)
+    if (!token?.isEnabled) {
+      throw new Error(`Unsupported currency: ${currency}`)
+    }
+
+    // Si la devise est ETH, récupérer la dernière transaction ETH, sinon pour les tokens
+    if (token.type === TokenType.NATIVE) {
+      return this.getLastEthTransaction(address)
+    } else {
+      return this.getLastTokenTransaction(address, token.contractAddress!)
+    }
+  }
+
+  private async getLastEthTransaction(address: string): Promise<EthereumTransaction | null> {
+    try {
+      // Récupérer uniquement la dernière transaction (avec un offset de 1 pour n'obtenir qu'une seule transaction)
+      const response = await this.fetchData<EthereumTransaction[]>('account', 'txlist', address, {
+        offset: '1',
+      })
+
+      // Si aucune transaction n'est trouvée, retourner null
+      if (!response.result?.length) {
+        return null
+      }
+
+      // Retourner la dernière transaction (la plus récente)
+      return response.result[0]
+    } catch (error) {
+      throw new Error('Failed to fetch last ETH transaction')
+    }
+  }
+
+  private async getLastTokenTransaction(
+    address: string,
+    contractAddress: string
+  ): Promise<EthereumTransaction | null> {
+    try {
+      // Récupérer uniquement la dernière transaction pour le token (avec un offset de 1)
+      const response = await this.fetchData<EthereumTransaction[]>('account', 'tokentx', address, {
+        contractaddress: contractAddress,
+        offset: '1',
+      })
+
+      // Si aucune transaction n'est trouvée, retourner null
+      if (!response.result?.length) {
+        return null
+      }
+
+      // Retourner la dernière transaction (la plus récente)
+      return response.result[0]
+    } catch (error) {
+      throw new Error('Failed to fetch last token transaction')
+    }
+  }
 }

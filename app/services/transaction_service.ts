@@ -4,9 +4,16 @@ import { EthereumTransaction } from '#types/etherscan'
 export default class TransactionService {
   public async getLastTransactionByAdress(adress: string): Promise<Transaction | null> {
     const transaction = Transaction.query()
-      .where('wallet_address', adress)
-      .orderBy('date', 'desc')
+      .where('walletAddress', adress)
+      .orderBy('timeStamp', 'desc')
       .first()
+    return transaction
+  }
+
+  public async getAllTransactionsByAdress(adress: string): Promise<Transaction[]> {
+    const transaction = Transaction.query()
+      .where('walletAddress', adress)
+      .orderBy('timeStamp', 'desc')
     return transaction
   }
 

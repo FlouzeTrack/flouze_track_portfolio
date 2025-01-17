@@ -121,20 +121,38 @@ export default class WalletService {
     }
   }
 
-  // TODO Save in db HERE !!!
   private async getTransactionsByCurrency(
     address: string,
     currency: string = 'ETH',
     startDate?: string,
     endDate?: string
   ): Promise<EthereumTransaction[]> {
-    const transactions = await this.etherscanService.getTransactions(address, currency)
+    // get last transaction into ehterscanService
+    const lastTransaction = await this.etherscanService.getLastTransaction(address, currency)
+    // get last transaction into db
+    const lastDbTransaction = await this.transactionService.getLastTransactionByAdress(address)
+    // last in db not exist
 
-    console.log('TRANSACTIONS', transactions)
-    console.log(this.transactionService)
-    for (const transaction of transactions) {
-      await this.transactionService.createTransaction(transaction, address)
+    if (!lastDbTransaction || lastTransaction?.timeStamp !== lastDbTransaction?.timeStamp) {
+      const allTransactions = await this.etherscanService.getTransactions(address, currency)
+      for (const transaction of allTransactions) {
+        await this.transactionService.createTransaction(transaction, address)
+      }
     }
+
+    const dBtransactions = await this.transactionService.getAllTransactionsByAdress(address)
+
+    const transactions: EthereumTransaction[] = dBtransactions.map((tx) => ({
+      hash: tx.hash,
+      timeStamp: tx.timeStamp,
+      gas: tx.gas,
+      gasUsed: tx.gasUsed,
+      gasPrice: tx.gasPrice,
+      isError: tx.isError,
+      from: tx.from,
+      to: tx.to,
+      value: tx.value,
+    }))
 
     if (!startDate && !endDate) {
       return transactions

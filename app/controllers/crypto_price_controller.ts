@@ -15,10 +15,11 @@ export default class CryptoPriceController {
 
   public async getPrices({ request, response, auth }: HttpContext): Promise<void> {
     try {
-      // const isAuth = await auth.check()
-      // if (!isAuth) {
-      //   return response.unauthorized('You must be authenticated to access this route')
-      // }
+      const isAuth = await auth.check()
+      if (!isAuth) {
+        throw new Error('Unauthorized access')
+      }
+
       const { startDate, endDate } = request.qs()
       if (!startDate || !endDate) {
         return response.badRequest('start and end date are required')

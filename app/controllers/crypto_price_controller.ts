@@ -19,6 +19,7 @@ export default class CryptoPriceController {
       if (!isAuth) {
         throw new Error('Unauthorized access')
       }
+
       const { startDate, endDate } = request.qs()
       if (!startDate || !endDate) {
         return response.badRequest('start and end date are required')

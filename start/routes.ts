@@ -16,6 +16,7 @@ router
             router.get('/:address?', [WalletController, 'getTransactions'])
             router.get('/:address/export', [WalletController, 'exportTransactions'])
             router.get('/:address/balances', [WalletController, 'getBalances'])
+            router.get('/:address/prices', [WalletController, 'getWalletPrices'])
           })
           .prefix('/wallet')
         router

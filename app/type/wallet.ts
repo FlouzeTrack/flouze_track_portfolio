@@ -33,3 +33,16 @@ export interface BalanceHistory {
   date: string
   value: string
 }
+
+export interface WalletPriceHistory {
+  date: string
+  balance: string
+  price: number
+  valueUsd: string
+}
+
+export interface WalletPriceResponse {
+  currentBalance: string
+  currentValueUsd: string
+  history: WalletPriceHistory[]
+}

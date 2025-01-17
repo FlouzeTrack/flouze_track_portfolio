@@ -20,6 +20,9 @@ export default class Favorite extends BaseModel {
   // declare wallet: BelongsTo<typeof Wallet>
 
   @column()
+  declare label: string | null
+
+  @column()
   declare user_id: string
 
   @beforeCreate()

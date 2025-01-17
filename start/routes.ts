@@ -23,6 +23,7 @@ router
           .group(() => {
             router.get('/', [FavoriteController, 'getFavorites'])
             router.post('/create', [FavoriteController, 'createFavorite'])
+            router.put('/:id', [FavoriteController, 'updateFavorite'])
             router.delete('/:id', [FavoriteController, 'deleteFavorite'])
           })
           .prefix('/favorites')

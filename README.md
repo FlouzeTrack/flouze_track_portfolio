@@ -31,6 +31,12 @@ REDIS_PORT=6379
 REDIS_PASSWORD=
 ```
 
+- To allow all the microservices to communicate with each other, you will need to create a network in docker. You may do so by running the following command:
+
+```
+docker network create backend
+```
+
 - Once the environment variables are set, you may run the following command in the root directory of this repository to start the docker containers:
 
 ```
@@ -71,6 +77,10 @@ app
 
 - This structure allows for a flexible architecture that can be easily extended and maintained.
 - Inside of the controllers is a specific one meant for seeding the database. The information is cached and ready to be displayed for the user. We then fetch every day at midnight the new data (ensuring in the process that we do not have twice the same information) and update the database. This way, the user can access the information quickly and efficiently.
+
+- The following drawing shows the architecture of the project:
+
+![Wallet API flow](./docs/wallet-flow.png)
 
 # Testing
 

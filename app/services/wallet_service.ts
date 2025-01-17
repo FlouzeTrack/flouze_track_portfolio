@@ -4,11 +4,14 @@ import type {
   WalletResponse,
   TransactionExport,
   BalanceHistory,
+  WalletPriceResponse,
+  WalletPriceHistory
 } from '#types/wallet'
 import EtherscanService from './apis/etherscan_api_service.js'
 import { BalanceCalculator } from './balance_calculator_service.js'
 import { formatTimestamp } from '#utils/date'
 import { DateFilterRule } from '#rules/date_filter_rules'
+import CryptoPriceService from '#services/crypto_price_service'
 
 export default class WalletService {
   constructor(private etherscanService: EtherscanService) {}
@@ -52,6 +55,67 @@ export default class WalletService {
     return {
       currentBalance,
       history,
+    }
+  }
+
+  public async getWalletPrices(
+    address: string,
+    startDate?: string,
+    endDate?: string
+  ): Promise<WalletPriceResponse> {
+    // Get balance history and prices
+    const [{ currentBalance, history }, prices] = await Promise.all([
+      this.getBalanceHistory(address, 'ETH'),
+      new CryptoPriceService().getAllPrices(startDate, endDate)
+    ])
+  
+    // Create a map of balances by date for quick lookup
+    const balanceMap = new Map(
+      history.map(item => [
+        item.date.split('T')[0], // YYYY-MM-DD
+        BigInt(item.value)
+      ])
+    )
+  
+    // Group prices by date and calculate daily wallet values
+    const dailyPrices = prices.reduce((acc: WalletPriceHistory[], price) => {
+      const date = new Date(price.timestamp * 1000).toISOString()
+      const dateOnly = date.split('T')[0]
+      
+      // Get the last known balance before or on this date
+      let balance = balanceMap.get(dateOnly)
+      if (!balance) {
+        // If no balance for this date, find the most recent previous balance
+        const previousDates = Array.from(balanceMap.entries())
+          .filter(([d]) => d < dateOnly)
+          .sort(([a], [b]) => a.localeCompare(b))
+        
+        balance = previousDates.length > 0 
+          ? previousDates[previousDates.length - 1][1]
+          : BigInt(0)
+      }
+  
+      // Calculate USD value
+      const valueUsd = (Number(balance) / 1e18 * price.close).toFixed(2)
+  
+      acc.push({
+        date,
+        balance: balance.toString(),
+        price: price.close,
+        valueUsd
+      })
+  
+      return acc
+    }, [])
+  
+    // Calculate current value
+    const currentPrice = prices[prices.length - 1]?.close || 0
+    const currentValueUsd = (Number(currentBalance) / 1e18 * currentPrice).toFixed(2)
+  
+    return {
+      currentBalance,
+      currentValueUsd,
+      history: dailyPrices
     }
   }
 

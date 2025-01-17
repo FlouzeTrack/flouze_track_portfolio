@@ -8,14 +8,22 @@ export default class extends BaseSchema {
       table.uuid('id').primary()
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').notNullable()
-      table.timestamp('date').notNullable()
+      table.string('from').notNullable()
+      table.string('to').notNullable()
+      table.string('wallet_address').notNullable()
+      table.string('time_stamp').notNullable()
       table.string('value').notNullable()
-      table.boolean('is_error').notNullable()
+      table.string('is_error').notNullable()
+      table.string('gas').notNullable()
+      table.string('gas_price').notNullable()
       table.string('gas_used').notNullable()
       table.string('hash').notNullable()
-      table.uuid('from').notNullable().references('id').inTable('wallets')
-      table.uuid('to').notNullable().references('id').inTable('wallets')
-      table.integer('crypto_id').notNullable().unsigned().references('id').inTable('cryptos')
+
+      // Index composite
+      table.unique(['time_stamp', 'wallet_address'])
+      // table.uuid('from').notNullable().references('id').inTable('wallets')
+      // table.uuid('to').notNullable().references('id').inTable('wallets')
+      // table.integer('crypto_id').notNullable().unsigned().references('id').inTable('cryptos')
     })
   }
 

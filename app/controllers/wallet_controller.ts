@@ -67,12 +67,12 @@ export default class WalletController {
   public async getWalletPrices({ request, response }: HttpContext): Promise<void> {
     try {
       const payload = await walletAddressValidator.validate({
-        address: request.param('address')
+        address: request.param('address'),
       })
-  
+
       const startDate = request.qs().startDate
       const endDate = request.qs().endDate
-  
+
       const priceData = await this.walletService.getWalletPrices(
         payload.address,
         startDate,

@@ -5,16 +5,20 @@ import type {
   TransactionExport,
   BalanceHistory,
   WalletPriceResponse,
-  WalletPriceHistory
+  WalletPriceHistory,
 } from '#types/wallet'
 import EtherscanService from './apis/etherscan_api_service.js'
 import { BalanceCalculator } from './balance_calculator_service.js'
 import { formatTimestamp } from '#utils/date'
 import { DateFilterRule } from '#rules/date_filter_rules'
 import CryptoPriceService from '#services/crypto_price_service'
+import TransactionService from '#services/transaction_service'
 
 export default class WalletService {
-  constructor(private etherscanService: EtherscanService) {}
+  private transactionService: TransactionService
+  constructor(private etherscanService: EtherscanService) {
+    this.transactionService = new TransactionService()
+  }
 
   public async getWalletInfo(
     address: string,
@@ -66,22 +70,22 @@ export default class WalletService {
     // Get balance history and prices
     const [{ currentBalance, history }, prices] = await Promise.all([
       this.getBalanceHistory(address, 'ETH'),
-      new CryptoPriceService().getAllPrices(startDate, endDate)
+      new CryptoPriceService().getAllPrices(startDate, endDate),
     ])
-  
+
     // Create a map of balances by date for quick lookup
     const balanceMap = new Map(
-      history.map(item => [
+      history.map((item) => [
         item.date.split('T')[0], // YYYY-MM-DD
-        BigInt(item.value)
+        BigInt(item.value),
       ])
     )
-  
+
     // Group prices by date and calculate daily wallet values
     const dailyPrices = prices.reduce((acc: WalletPriceHistory[], price) => {
       const date = new Date(price.timestamp * 1000).toISOString()
       const dateOnly = date.split('T')[0]
-      
+
       // Get the last known balance before or on this date
       let balance = balanceMap.get(dateOnly)
       if (!balance) {
@@ -89,36 +93,35 @@ export default class WalletService {
         const previousDates = Array.from(balanceMap.entries())
           .filter(([d]) => d < dateOnly)
           .sort(([a], [b]) => a.localeCompare(b))
-        
-        balance = previousDates.length > 0 
-          ? previousDates[previousDates.length - 1][1]
-          : BigInt(0)
+
+        balance = previousDates.length > 0 ? previousDates[previousDates.length - 1][1] : BigInt(0)
       }
-  
+
       // Calculate USD value
-      const valueUsd = (Number(balance) / 1e18 * price.close).toFixed(2)
-  
+      const valueUsd = ((Number(balance) / 1e18) * price.close).toFixed(2)
+
       acc.push({
         date,
         balance: balance.toString(),
         price: price.close,
-        valueUsd
+        valueUsd,
       })
-  
+
       return acc
     }, [])
-  
+
     // Calculate current value
     const currentPrice = prices[prices.length - 1]?.close || 0
-    const currentValueUsd = (Number(currentBalance) / 1e18 * currentPrice).toFixed(2)
-  
+    const currentValueUsd = ((Number(currentBalance) / 1e18) * currentPrice).toFixed(2)
+
     return {
       currentBalance,
       currentValueUsd,
-      history: dailyPrices
+      history: dailyPrices,
     }
   }
 
+  // TODO Save in db HERE !!!
   private async getTransactionsByCurrency(
     address: string,
     currency: string = 'ETH',
@@ -126,6 +129,12 @@ export default class WalletService {
     endDate?: string
   ): Promise<EthereumTransaction[]> {
     const transactions = await this.etherscanService.getTransactions(address, currency)
+
+    console.log('TRANSACTIONS', transactions)
+    console.log(this.transactionService)
+    for (const transaction of transactions) {
+      await this.transactionService.createTransaction(transaction, address)
+    }
 
     if (!startDate && !endDate) {
       return transactions

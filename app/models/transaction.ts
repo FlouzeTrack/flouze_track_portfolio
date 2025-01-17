@@ -1,6 +1,7 @@
-import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
-import Wallet from './wallet.js'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, beforeCreate, column } from '@adonisjs/lucid/orm'
+// import { BaseModel, beforeCreate, belongsTo, column } from '@adonisjs/lucid/orm'
+// import Wallet from './wallet.js'
+// import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -9,31 +10,46 @@ export default class Transaction extends BaseModel {
   declare id: string
 
   @column.dateTime({ autoCreate: true })
-  declare created_at: DateTime
+  declare createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updated_at: DateTime
+  declare updatedAt: DateTime
 
-  @column.dateTime()
-  declare date: DateTime
+  @column()
+  declare timeStamp: string
+
+  @column()
+  declare walletAddress: string
 
   @column()
   declare value: string
 
   @column()
-  declare is_error: boolean
+  declare isError: string
 
   @column()
-  declare gas_used: string
+  declare gas: string
+
+  @column()
+  declare gasUsed: string
+
+  @column()
+  declare gasPrice: string
 
   @column()
   declare hash: string
 
-  @belongsTo(() => Wallet)
-  declare from: BelongsTo<typeof Wallet>
+  @column()
+  declare from: string
 
-  @belongsTo(() => Wallet)
-  declare to: BelongsTo<typeof Wallet>
+  @column()
+  declare to: string
+
+  // @belongsTo(() => Wallet)
+  // declare from: BelongsTo<typeof Wallet>
+
+  // @belongsTo(() => Wallet)
+  // declare to: BelongsTo<typeof Wallet>
 
   @beforeCreate()
   public static assignUuid(model: Transaction) {

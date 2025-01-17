@@ -1,7 +1,8 @@
-import { BaseModel, beforeCreate, column, hasMany } from '@adonisjs/lucid/orm'
-import Balance from './balance.js'
-import type { HasMany } from '@adonisjs/lucid/types/relations'
-import Transaction from './transaction.js'
+import { BaseModel, beforeCreate, column } from '@adonisjs/lucid/orm'
+// import { BaseModel, beforeCreate, column, hasMany } from '@adonisjs/lucid/orm'
+// import Balance from './balance.js'
+// import type { HasMany } from '@adonisjs/lucid/types/relations'
+// import Transaction from './transaction.js'
 import { v4 as uuidv4 } from 'uuid'
 import { DateTime } from 'luxon'
 // import Favorite from './favorite.js'
@@ -19,11 +20,11 @@ export default class Wallet extends BaseModel {
   @column()
   declare adress: string
 
-  @hasMany(() => Balance)
-  declare balances: HasMany<typeof Balance>
+  // @hasMany(() => Balance)
+  // declare balances: HasMany<typeof Balance>
 
-  @hasMany(() => Transaction)
-  declare transactions: HasMany<typeof Transaction>
+  // @hasMany(() => Transaction)
+  // declare transactions: HasMany<typeof Transaction>
 
   // @hasMany(() => Favorite)
   // declare favorites: HasMany<typeof Favorite>

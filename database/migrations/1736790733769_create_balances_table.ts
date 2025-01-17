@@ -6,11 +6,14 @@ export default class extends BaseSchema {
   async up() {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.timestamp('created_at').notNullable()
-      table.timestamp('updated_at').notNullable()
-      table.integer('quantity')
-      table.uuid('wallet_id').notNullable().references('id').inTable('wallets')
-      table.integer('crypto_id').unsigned().notNullable().references('id').inTable('cryptos')
+      table.string('wallet_address').notNullable()
+      table.string('currency').notNullable()
+      table.text('data').notNullable()
+      table.timestamp('created_at', { useTz: true }).notNullable()
+      table.timestamp('updated_at', { useTz: true }).notNullable()
+
+      // Index composite
+      table.unique(['wallet_address', 'currency'])
     })
   }
 
